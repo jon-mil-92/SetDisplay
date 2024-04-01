@@ -1,6 +1,6 @@
 # SetDisplay
 
-This is a helper program designed only for usage in [Display Hot Keys]. This program sets the primary display's resolution, bit depth, refresh rate, display scale percentage, and display scaling mode via the CLI. Only integers can be used as input!
+This is a helper program designed only for usage in [Display Hot Keys]. This program sets the primary display's resolution, bit depth, refresh rate, display scale percentage, and display scaling mode via the CLI. Only integers can be used as input if you decide to use this program outside of Display Hot Keys!
 
 ## Usage
 
