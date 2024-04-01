@@ -4,10 +4,10 @@ This is a helper program designed only for usage in [Display Hot Keys]. This pro
 
 ## Usage
 
-The following is an example of how to set a 3840x2160 resolution with a 32-bit depth, 120 Hz refresh rate, 100% display scaling, and a "Centered" scaling mode:
+The following is an example of how to set a 3840x2160 resolution with a 32-bit depth, 120 Hz refresh rate, centered scaling mode, and 100% display scaling:
 
 ```console
-C:\path\to\SetDisplay> SetDisplay.exe 3840 2160 32 120 100 2
+C:\path\to\SetDisplay> SetDisplay.exe 3840 2160 32 120 2 100
 ```
 Possible scaling mode values are as follows:
 * 0 to preserve aspect ratio.

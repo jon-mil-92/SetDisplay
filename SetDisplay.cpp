@@ -1,7 +1,10 @@
 /*
  * Original Author: Jonathan Miller
  * Created: 04-01-2024
- * Version: 1.1.0
+ * Version: 1.1.0.1
+ * 
+ * Description: Instantly apply various display settings for the primary monitor.
+ * 
  * License: The MIT License - https://mit-license.org/
  * Copyright (c) 2024 Jonathan Miller
  */
@@ -18,9 +21,67 @@ static const vector<int> DPI_SCALE_PERCENTAGES = {100, 125, 150, 175, 200, 225, 
 // Define an integer for the number of DPI scale percentage values in Windows 10 and Windows 11.
 static const int NUM_OF_DPI_SCALE_PERCENTAGES = 9;
 
+// Forward declarations of functions.
+void setDisplayMode(int width, int height, int bitDepth, int refreshRate);
+void setDisplayScalingMode(int scalingMode);
+void setDpiScalePercentage(int dpiScalePercentage);
+int getDefaultDpiScaleIndex();
+
+/*
+* The main method calls functions to update the display mode, DPI scale percentage, and display scaling mode.
+* CL arguments are as follows: resolution width, resolution height, bit depth, refresh rate, DPI scale percentage, and 
+* display scaling mode.
+*/
+int main(int argc, char* argv[]) {
+    // Set the display mode given from the command line arguments.
+    setDisplayMode(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+
+    // Set the display scaling mode given from the command line argument.
+    setDisplayScalingMode(atoi(argv[5]));
+
+    // Set the DPI scale percentage given from the command line argument.
+    setDpiScalePercentage(atoi(argv[6]));
+
+    // End of program.
+    return 0;
+}
+
+/*
+* This method sets the current desktop display mode from the given parameters.
+*
+* @param width - The new horizontal resolution of the primary display.
+* @param height - The new vertical resolution of the primary display.
+* @param bitDepth - The new bit depth of the primary display.
+* @param refreshRate - The new refresh rate of the primary display.
+*/
+void setDisplayMode(int width, int height, int bitDepth, int refreshRate) {
+    // Create a devmode struct.
+    DEVMODE devMode;
+
+    // Initialize the memory for the devmode struct.
+    memset(&devMode, 0, sizeof(devMode));
+    devMode.dmSize = sizeof(devMode);
+
+    // Update the devmode members with the given values.
+    devMode.dmPelsWidth = width;
+    devMode.dmPelsHeight = height;
+    devMode.dmBitsPerPel = bitDepth;
+    devMode.dmDisplayFrequency = refreshRate;
+    devMode.dmDriverExtra = 0;
+    devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
+
+    // Update the current display mode.
+    LONG changeDisplaySettingsResult = ChangeDisplaySettings(&devMode, CDS_UPDATEREGISTRY);
+
+    // Check if the display mode could be set, and output an error message if it failed.
+    if (changeDisplaySettingsResult != DISP_CHANGE_SUCCESSFUL) {
+        std::cerr << "Failed to set the display mode! Error Code: " << changeDisplaySettingsResult << std::endl;
+    }
+}
+
 /*
 * This method sets a scaling mode for the active display configuration.
-* 
+*
 * @param scalingMode - The new scaling mode to apply for the active displays.
 */
 void setDisplayScalingMode(int scalingMode) {
@@ -59,8 +120,8 @@ void setDisplayScalingMode(int scalingMode) {
     DISPLAYCONFIG_MODE_INFO* modeInfoArray = new DISPLAYCONFIG_MODE_INFO[numModeInfoArrayElements];
 
     // Query the active display configuration.
-    LONG queryDisplayConfigResult = QueryDisplayConfig(QDC_DATABASE_CURRENT, &numPathArrayElements, pathArray, 
-            &numModeInfoArrayElements, modeInfoArray, currentTopology);
+    LONG queryDisplayConfigResult = QueryDisplayConfig(QDC_DATABASE_CURRENT, &numPathArrayElements, pathArray,
+        &numModeInfoArrayElements, modeInfoArray, currentTopology);
 
     // Check if the active display configuration was successfully queried, and output an error message if it failed.
     if (queryDisplayConfigResult != ERROR_SUCCESS) {
@@ -73,8 +134,8 @@ void setDisplayScalingMode(int scalingMode) {
     }
 
     // Apply the new display scaling mode.
-    LONG setDisplayConfigResult = SetDisplayConfig(numPathArrayElements, pathArray, numModeInfoArrayElements, 
-            modeInfoArray, SDC_APPLY | SDC_USE_SUPPLIED_DISPLAY_CONFIG | SDC_SAVE_TO_DATABASE);
+    LONG setDisplayConfigResult = SetDisplayConfig(numPathArrayElements, pathArray, numModeInfoArrayElements,
+        modeInfoArray, SDC_APPLY | SDC_USE_SUPPLIED_DISPLAY_CONFIG | SDC_SAVE_TO_DATABASE);
 
     // Check if the display configuration could be set, and output an error message if it failed.
     if (setDisplayConfigResult != ERROR_SUCCESS) {
@@ -84,62 +145,6 @@ void setDisplayScalingMode(int scalingMode) {
     // Clean up allocated memory.
     delete[] pathArray;
     delete[] modeInfoArray;
-}
-
-/*
-* This method sets the current desktop display mode from the given parameters.
-*
-* @param width - The new horizontal resolution of the primary display.
-* @param height - The new vertical resolution of the primary display.
-* @param bitDepth - The new bit depth of the primary display.
-* @param refreshRate - The new refresh rate of the primary display.
-*/
-void setDisplayMode(int width, int height, int bitDepth, int refreshRate) {
-    // Create a devmode struct.
-    DEVMODE devMode;
-
-    // Initialize the memory for the devmode struct.
-    memset(&devMode, 0, sizeof(devMode));
-    devMode.dmSize = sizeof(devMode);
-
-    // Update the devmode members with the given values.
-    devMode.dmPelsWidth = width;
-    devMode.dmPelsHeight = height;
-    devMode.dmBitsPerPel = bitDepth;
-    devMode.dmDisplayFrequency = refreshRate;
-    devMode.dmDriverExtra = 0;
-    devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
-
-    // Update the current display mode.
-    LONG changeDisplaySettingsResult = ChangeDisplaySettings(&devMode, CDS_UPDATEREGISTRY);
-
-    // Check if the display mode could be set, and output an error message if it failed.
-    if (changeDisplaySettingsResult != DISP_CHANGE_SUCCESSFUL) {
-        std::cerr << "Failed to set the display mode! Error Code: " << changeDisplaySettingsResult << std::endl;
-    }
-}
-
-/*
-* This method gets the default DPI scale percentage index.
-*
-* @return The default DPI scale percentage index.
-*/
-int getDefaultDpiScaleIndex() {
-    // Define an integer to hold the default DPI scale percentage index.
-    int defaultDpiScaleIndex = 0;
-
-    // Get the default DPI scale percentage index.
-    bool getDefaultDpiScaleIndexResult = SystemParametersInfo(SPI_GETLOGICALDPIOVERRIDE, 0, 
-            (LPVOID)&defaultDpiScaleIndex, 0);
-
-    // Check if the default DPI scale percentage index could be retrieved, and output an error message if it failed.
-    if (getDefaultDpiScaleIndexResult == 0) {
-        std::cerr << "Failed to get the default DPI scale percentage index!" << std::endl;
-    }
-
-    // Return the absolute value of the default DPI scale percentage index since SystemParametersInfo returns the 
-    // negative index value.
-    return abs(defaultDpiScaleIndex);
 }
 
 /*
@@ -179,20 +184,24 @@ void setDpiScalePercentage(int dpiScalePercentage) {
 }
 
 /*
-* The main method calls functions to update the display mode, DPI scale percentage, and display scaling mode.
-* CL arguments are as follows: resolution width, resolution height, bit depth, refresh rate, DPI scale percentage, and 
-* display scaling mode.
+* This method gets the default DPI scale percentage index.
+*
+* @return The default DPI scale percentage index.
 */
-int main(int argc, char* argv[]) {
-    // Set the display mode given from the command line arguments.
-    setDisplayMode(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+int getDefaultDpiScaleIndex() {
+    // Define an integer to hold the default DPI scale percentage index.
+    int defaultDpiScaleIndex = 0;
 
-    // Set the DPI scale percentage given from the command line argument.
-    setDpiScalePercentage(atoi(argv[5]));
+    // Get the default DPI scale percentage index.
+    bool getDefaultDpiScaleIndexResult = SystemParametersInfo(SPI_GETLOGICALDPIOVERRIDE, 0,
+        (LPVOID)&defaultDpiScaleIndex, 0);
 
-    // Set the display scaling mode given from the command line argument.
-    setDisplayScalingMode(atoi(argv[6]));
+    // Check if the default DPI scale percentage index could be retrieved, and output an error message if it failed.
+    if (getDefaultDpiScaleIndexResult == 0) {
+        std::cerr << "Failed to get the default DPI scale percentage index!" << std::endl;
+    }
 
-    // End of program.
-    return 0;
+    // Return the absolute value of the default DPI scale percentage index since SystemParametersInfo returns the 
+    // negative index value.
+    return abs(defaultDpiScaleIndex);
 }
