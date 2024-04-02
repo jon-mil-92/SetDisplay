@@ -108,7 +108,7 @@ void setDisplayScalingMode(int scalingMode) {
         break;
     }
 
-    // Variable to hold the current display topology after querying the display configuration.
+    // Point to the current display topology after querying the display configuration.
     DISPLAYCONFIG_TOPOLOGY_ID* currentTopology = new DISPLAYCONFIG_TOPOLOGY_ID;
 
     // Retrieve the size of the buffers that are required to call the QueryDisplayConfig function.
