@@ -1,10 +1,10 @@
 # SetDisplay
 
-This is a helper program designed only for usage in [Display Hot Keys]. This program sets the primary display's resolution, bit depth, refresh rate, display scale percentage, and display scaling mode via the CLI. Only integers can be used as input if you decide to use this program outside of Display Hot Keys!
+This is a helper program designed only for usage in [Display Hot Keys]. This program sets the primary display's resolution, bit depth, refresh rate, display scaling mode, and DPI scale percentage via the CLI. Only integers can be used as input if you decide to use this program outside of Display Hot Keys!
 
 ## Usage
 
-The following is an example of how to set a 3840x2160 resolution with a 32-bit depth, 120 Hz refresh rate, centered scaling mode, and 100% display scaling:
+The following is an example of how to set a 3840x2160 resolution with a 32-bit depth, 120 Hz refresh rate, centered scaling mode, and 100% DPI scaling:
 
 ```console
 C:\path\to\SetDisplay> SetDisplay.exe 3840 2160 32 120 2 100
