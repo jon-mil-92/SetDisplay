@@ -15,6 +15,6 @@ Possible scaling mode values are as follows:
 * 2 to center the image in the panel.
 * Any other integer will use the preserve aspect ratio scaling mode.
 
-**Note:** Use GPU Scaling in your display driver settings to ensure the display scaling mode does not get overridden by the monitor.
+**Note:** You may need to use GPU Scaling in your display driver settings to prevent the monitor from overriding the scaling mode.
 
 [Display Hot Keys]: https://github.com/jon-mil-92/DisplayHotKeys
