@@ -25,7 +25,7 @@ Valid DPI scaling values are 100, 125, 150, 175, 200, 225, 250, 300, and 350.
 
 ## License
 
-Distributed under the [MIT License]. See `LICENSE.txt` for more information.
+Distributed under [The MIT License]. See `LICENSE.txt` for more information.
 
 <!-- MARKDOWN LINKS -->
 
