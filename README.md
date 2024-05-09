@@ -1,6 +1,6 @@
 # SetDisplay
 
-This is a helper program designed only for usage in [Display Hot Keys]. This program sets the primary display's resolution, bit depth, refresh rate, scaling mode, and DPI scale percentage via the CLI. Only integers can be used as input if you decide to use this program outside of Display Hot Keys!
+This is a helper program designed only for usage in [Display Hot Keys] version 1.2.1 and earlier. This program sets the primary display's resolution, bit depth, refresh rate, scaling mode, and DPI scale percentage via the CLI. Only integers can be used as input if you decide to use this program outside of Display Hot Keys!
 
 ## Prerequisites
 * Windows 10 or Windows 11.
